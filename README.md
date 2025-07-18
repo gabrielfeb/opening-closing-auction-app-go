@@ -1,0 +1,1 @@
+# opening-closing-auction-app-go
