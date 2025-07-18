@@ -82,3 +82,50 @@ func TestAuctionRepository(t *testing.T) {
 		require.Equal(t, auction1.Id, auctions[0].Id)
 	})
 }
+
+// --- Teste 3: Função de Criação de Leilão ---
+func TestCreateAuction(t *testing.T) {
+	db, cleanup := setupTestDB(t)
+	defer cleanup()
+
+	repo := NewAuctionRepository(db)
+	ctx := context.Background()
+
+	t.Run("quando cria um leilão com sucesso", func(t *testing.T) {
+		// Preparação
+		auction, err := auction_entity.CreateAuction(
+			"Playstation 5",
+			"Eletrônicos",
+			"Video game de última geração, novo na caixa.",
+			auction_entity.New)
+		require.Nil(t, err) // Garante que a entidade foi criada sem erro
+
+		// Execução
+		createErr := repo.CreateAuction(ctx, auction)
+		require.Nil(t, createErr) // Garante que foi salvo no banco sem erro
+
+		// Verificação
+		foundAuction, findErr := repo.FindAuctionById(ctx, auction.Id)
+		require.Nil(t, findErr)
+		require.NotNil(t, foundAuction)
+		require.Equal(t, auction.ProductName, foundAuction.ProductName)
+	})
+
+	t.Run("quando a criação falha por contexto inválido", func(t *testing.T) {
+		// Preparação
+		auction, err := auction_entity.CreateAuction(
+			"Xbox Series X",
+			"Eletrônicos",
+			"Outro video game de última geração.",
+			auction_entity.New)
+		require.Nil(t, err)
+
+		// Criação de um contexto já cancelado para forçar um erro
+		cancelledCtx, cancel := context.WithCancel(ctx)
+		cancel()
+
+		// Execução e Verificação
+		createErr := repo.CreateAuction(cancelledCtx, auction)
+		require.NotNil(t, createErr) // DEVE retornar um erro
+	})
+}
