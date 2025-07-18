@@ -1,4 +1,4 @@
-FROM golang:1.20
+FROM golang:1.20 AS builder
 
 WORKDIR /app
 
@@ -8,8 +8,15 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o /app/auction cmd/auction/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/auction cmd/auction/main.go
+
+
+FROM alpine:latest
+
+WORKDIR /root/
+
+COPY --from=builder /app/auction .
 
 EXPOSE 8080
 
-ENTRYPOINT ["/app/auction"]
+ENTRYPOINT ["./auction"]
