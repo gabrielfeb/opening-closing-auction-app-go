@@ -1,55 +1,59 @@
-# 🏦 Sistema de Leilões em Go
+# Sistema de Leilões em Go
 
-Um sistema de leilões robusto desenvolvido em Go, utilizando uma arquitetura limpa para garantir escalabilidade e manutenibilidade. A API permite a criação de leilões, o registro de lances e a consulta de resultados, com uma funcionalidade de fechamento automático de leilões baseada em tempo.
+Este é um sistema de leilões robusto desenvolvido em Go, utilizando uma arquitetura limpa para garantir escalabilidade e manutenibilidade. A API permite a criação de leilões, o registro de lances e a consulta de resultados, incluindo uma funcionalidade de fechamento automático de leilões baseada em tempo.
 
----
+## Origem do Projeto
 
-## ✨ Funcionalidades Principais
+Este projeto é baseado no repositório original da [Full Cycle Tecnologia](https://faculdadefullcycle.edu.br/), clonado a partir de:
 
-- **Criação de Leilões**: Permite registrar novos produtos para leilão.
-- **Registro de Lances**: Usuários podem fazer lances em leilões ativos.
-- **Consulta de Leilões**: Busca de leilões por status, categoria ou nome do produto.
-- **Consulta de Lances**: Visualização de todos os lances feitos para um determinado leilão.
-- **Fechamento Automático**: Uma rotina em background (goroutine) monitora e fecha automaticamente os leilões cujo tempo expirou, com duração configurável via variáveis de ambiente.
-- **Processamento de Lances em Lote**: Otimização de performance através do processamento de lances em lotes.
+[https://github.com/devfullcycle/labs-auction-goexpert](https://github.com/devfullcycle/labs-auction-goexpert)
 
----
+A lógica principal do sistema foi mantida, com melhorias desenvolvidas conforme o enunciado da atividade da pós-graduação **Go Expert** da Full Cycle. As principais alterações incluem:
 
-## 🛠️ Tecnologias Utilizadas
+- Adição de funcionalidade de fechamento automático de leilões após tempo definido via variáveis de ambiente.
+- Implementação de goroutines para monitoramento de leilões ativos.
+- Criação de testes para validar o encerramento automático.
 
-- **Linguagem**: Go
-- **Framework Web**: Gin Gonic
-- **Banco de Dados**: MongoDB
-- **Containerização**: Docker & Docker Compose
-- **Testes**: Pacote `testing` nativo do Go & Testify
+## Funcionalidades
 
----
+- Criação de leilões com tempo configurável.
+- Registro de lances por usuários.
+- Consulta de leilões por status, categoria ou nome do produto.
+- Consulta de lances por leilão.
+- Fechamento automático de leilões por tempo.
+- Processamento de lances em lote para maior eficiência.
 
-## 🏗️ Arquitetura
+## Tecnologias Utilizadas
 
-O projeto segue princípios de **Arquitetura Limpa (Clean Architecture)**, separando as responsabilidades em camadas distintas:
+- Linguagem: Go
+- Framework Web: Gin Gonic
+- Banco de Dados: MongoDB
+- Containerização: Docker & Docker Compose
+- Testes: testing & Testify
 
-- **`internal/entity`**: Camada de entidades e regras de negócio agnósticas.
-- **`internal/usecase`**: Implementa os casos de uso e orquestra as operações.
-- **`internal/infra`**: Detalhes de implementação (servidor web, banco de dados, etc).
+## Arquitetura
 
----
+O projeto segue os princípios da Clean Architecture:
 
-## 🚀 Começando
+- `internal/entity`: Entidades e regras de negócio.
+- `internal/usecase`: Casos de uso.
+- `internal/infra`: Implementação de API, banco de dados e adaptadores.
 
-### ✨ Pré-requisitos
+## Como Executar
 
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
+### Requisitos
 
-### ⚙️ Configuração
+- Docker
+- Docker Compose
+
+### Clonagem e Configuração
 
 ```bash
 git clone <URL_DO_SEU_REPOSITORIO>
 cd <NOME_DO_REPOSITORIO>
 ```
 
-Crie um arquivo `.env` dentro de `cmd/auction/` com o seguinte conteúdo:
+Crie um arquivo `.env` dentro da pasta `cmd/auction/` com o seguinte conteúdo:
 
 ```env
 MONGODB_URL=mongodb://mongodb:27017
@@ -60,26 +64,22 @@ BATCH_INSERT_INTERVAL=3m
 MAX_BATCH_SIZE=5
 ```
 
----
-
-## 🚀 Executando a Aplicação
+### Execução
 
 ```bash
 docker-compose up --build
 ```
 
-A API estará disponível em: [http://localhost:8080](http://localhost:8080)
+A API estará acessível em: http://localhost:8080
 
----
+## Executando os Testes
 
-## ✅ Rodando os Testes
-
-### 1. Suba apenas o banco MongoDB:
+### Etapa 1: Subir apenas o MongoDB
 ```bash
 docker-compose up -d mongodb
 ```
 
-### 2. Execute os testes:
+### Etapa 2: Rodar os testes
 ```bash
 docker build --target builder -t auction-tester . && \
   docker run --rm --network auction-network \
@@ -87,14 +87,12 @@ docker build --target builder -t auction-tester . && \
   auction-tester go test -v ./...
 ```
 
-### 3. Pare o banco:
+### Etapa 3: Encerrar serviços
 ```bash
 docker-compose down
 ```
 
----
-
-## ↔️ Endpoints da API
+## Endpoints da API
 
 | Método | Rota                           | Descrição                                 |
 |--------|--------------------------------|-------------------------------------------|
@@ -106,12 +104,11 @@ docker-compose down
 | GET    | `/bid/:auctionId`            | Busca todos os lances de um leilão        |
 | GET    | `/user/:userId`              | Busca um usuário pelo ID                   |
 
+## Licença
+
+Este projeto é distribuído sob a Licença MIT.
+
 ---
 
-## 🙏 Contribuição
-Pull requests são bem-vindos! Para melhorias maiores, abra uma issue primeiro para discutirmos o que você gostaria de alterar.
-
----
-
-## ✉️ Licença
-[MIT](LICENSE)
+Para mais informações sobre o curso e materiais complementares, acesse:
+[https://faculdadefullcycle.edu.br](https://faculdadefullcycle.edu.br)
